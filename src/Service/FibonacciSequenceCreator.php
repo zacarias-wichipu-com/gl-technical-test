@@ -8,23 +8,24 @@ final class FibonacciSequenceCreator
 {
     private array $sequence;
 
-    public function __construct(
-        private int $lowerLimit,
-        private int $upperLimit
-    )
-    {
-    }
+    public function createSequenceFromLimits(
+        int $lowerLimit,
+        int $upperLimit
 
-    public function createSequence(): void
+    ): void
     {
+        if ($upperLimit <= $lowerLimit) {
+            throw new \Exception('The upper limit must be greater than the lower limit.');
+        }
+
         $this->setSequence([
             'The',
             'Fibonacci',
             'sequence',
             'between',
-            $this->lowerLimit,
+            $lowerLimit,
             'and',
-            $this->upperLimit,
+            $upperLimit,
             'is',
             'n',
             '.'

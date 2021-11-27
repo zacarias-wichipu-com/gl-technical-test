@@ -38,11 +38,11 @@ class FibonacciCreateCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $fibonacciSequenceCreator = new FibonacciSequenceCreator(
+        $fibonacciSequenceCreator = new FibonacciSequenceCreator();
+        $fibonacciSequenceCreator->createSequenceFromLimits(
             $input->getArgument('lowerLimit'),
-            $input->getArgument('upperLimit'),
+            $input->getArgument('upperLimit')
         );
-        $fibonacciSequenceCreator->createSequence();
 
         $io->success($fibonacciSequenceCreator->getSequence());
 

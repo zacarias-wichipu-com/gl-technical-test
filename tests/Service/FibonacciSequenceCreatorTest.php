@@ -14,8 +14,8 @@ final class FibonacciSequenceCreatorTest extends TestCase
         $lowerLimit = 1635724800;
         $upperLimit = 1638316799;
 
-        $fibonacciSequenceCreator = new FibonacciSequenceCreator($lowerLimit, $upperLimit);
-        $fibonacciSequenceCreator->createSequence();
+        $fibonacciSequenceCreator = new FibonacciSequenceCreator();
+        $fibonacciSequenceCreator->createSequenceFromLimits($lowerLimit, $upperLimit);
         $sequence = $fibonacciSequenceCreator->getSequence();
 
         $this->assertEquals(
