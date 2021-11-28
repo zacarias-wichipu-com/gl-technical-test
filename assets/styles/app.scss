@@ -1,1 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
+
+form  {
+  &.fibonacci_sequence {
+    > #fibonacci_sequence {
+      @include make-row();
+    }
+  }
+}

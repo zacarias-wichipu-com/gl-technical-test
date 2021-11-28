@@ -22,11 +22,17 @@ class FibonacciController extends AbstractController
         FibonacciSequenceCreator $fibonacciSequenceCreator
     ): JsonResponse
     {
+
+        $lowerLimitDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $request->query->get('lower_limit'));
+        $upperLimitDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $request->query->get('upper_limit'));
+
         $fibonacciSequenceCreator->createSequenceFromLimits(
-            $request->request->get('lower_limit'),
-            $request->request->get('upper_limit')
+            $lowerLimitDate->getTimestamp(),
+            $upperLimitDate->getTimestamp()
         );
 
-        return $this->json($fibonacciSequenceCreator->getSequence());
+        return $this->json([
+            'contained_numbers' => $fibonacciSequenceCreator->getSequence()
+        ]);
     }
 }
