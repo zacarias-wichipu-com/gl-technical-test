@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Exception\InvalidDateRangeException;
+use App\Exception\InvalidDateRangeFormatException;
 use App\Service\FibonacciRangeMatcher;
 use PHPUnit\Framework\TestCase;
 
@@ -16,55 +18,54 @@ final class FibonacciRangeMatcherTest extends TestCase
         $this->fibonacciRangeMatcher = new FibonacciRangeMatcher();
     }
 
-    public function testTheTenFirstFibonacciSequenceNumbers(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(0, 34);
+    public function testInvalidDates() {
+        $this->expectException(InvalidDateRangeFormatException::class);
 
+        $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('asdsd', 'asda');
+    }
+
+    public function testInvalidRangeDates() {
+        $this->expectException(InvalidDateRangeException::class);
+
+        $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('2021-10-29 00:00:00', '2021-10-28 00:00:00');
+    }
+
+    public function testValidRangeDatesWithoutFibonacciMatch() {
+        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('2021-10-29 00:00:00', '2021-10-30 00:00:00');
+
+        $this->assertIsArray($fibonacciSequenceRangeMatch);
         $this->assertEquals(
-            [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
+            [],
             array_values($fibonacciSequenceRangeMatch)
         );
     }
 
-    public function testTheThirdFirstFibonacciSequenceNumbers(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(0, 1);
+    public function testValidRangeDatesWithStartFibonacciMatch() {
+        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('2004-01-01 00:00:00', '2021-10-30 00:00:00');
 
+        $this->assertIsArray($fibonacciSequenceRangeMatch);
         $this->assertEquals(
-            [0, 1, 1],
-            $fibonacciSequenceRangeMatch
-        );
-    }
-
-    public function testTheZeroNumberInFibonacciSequenceNumbers(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(0, 0);
-
-        $this->assertEquals(
-            [0],
-            $fibonacciSequenceRangeMatch
-        );
-    }
-
-    public function testTheOneNumberInFibonacciSequenceNumbers(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(1, 1);
-
-        $this->assertEquals(
-            [1, 1],
+            [1134903170],
             array_values($fibonacciSequenceRangeMatch)
         );
     }
 
-    public function testTheFibonacciSequenceNumbersBetweenFourAndTwentyFive(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(20365011074, 86267571272);
+    public function testValidRangeDatesWithEndFibonacciMatch() {
+        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('2010-01-01 00:00:00', '2032-12-31 23:59:59');
 
+        $this->assertIsArray($fibonacciSequenceRangeMatch);
         $this->assertEquals(
-            [20365011074, 32951280099, 53316291173, 86267571272],
+            [1836311903],
             array_values($fibonacciSequenceRangeMatch)
         );
     }
-    public function testTheFibonacciSequenceNumbersOnTheLimit(): void {
-        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence(20365011075, 86267571271);
 
+    public function testValidRangeDatesWithStartAndEndFibonacciMatch() {
+        $fibonacciSequenceRangeMatch = $this->fibonacciRangeMatcher->matchRangeInFibonacciSequence('2004-01-01 00:00:00', '2032-12-31 23:59:59');
+
+        $this->assertIsArray($fibonacciSequenceRangeMatch);
         $this->assertEquals(
-            [32951280099, 53316291173],
+            [1134903170, 1836311903],
             array_values($fibonacciSequenceRangeMatch)
         );
     }
