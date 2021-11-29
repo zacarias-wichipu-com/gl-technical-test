@@ -2,7 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Service\FibonacciSequenceCreator;
+use App\Exception\InvalidDateRangeException;
+use App\Exception\InvalidDateRangeFormatException;
+use App\Service\FibonacciRangeMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,20 +21,34 @@ class FibonacciController extends AbstractController
     )]
     public function index(
         Request $request,
-        FibonacciSequenceCreator $fibonacciSequenceCreator
+        FibonacciRangeMatcher $fibonacciRangeMatcher
     ): JsonResponse
     {
 
-        $lowerLimitDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $request->query->get('lower_limit'));
-        $upperLimitDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $request->query->get('upper_limit'));
-
-        $fibonacciSequenceCreator->createSequenceFromLimits(
-            $lowerLimitDate->getTimestamp(),
-            $upperLimitDate->getTimestamp()
-        );
+        try {
+            $fibonacciSequenceRangeMatch = $fibonacciRangeMatcher->matchRangeInFibonacciSequence(
+                $request->query->get('start_date'),
+                $request->query->get('end_date')
+            );
+        } catch (InvalidDateRangeFormatException $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+                Response::HTTP_BAD_REQUEST
+            ]);
+        } catch (InvalidDateRangeException $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+                Response::HTTP_BAD_REQUEST
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+                Response::HTTP_BAD_REQUEST
+            ]);
+        }
 
         return $this->json([
-            'contained_numbers' => $fibonacciSequenceCreator->getSequence()
+            'fibonacci_sequence_range_match' => $fibonacciSequenceRangeMatch
         ]);
     }
 }
