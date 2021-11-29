@@ -1,9 +1,19 @@
 @import "~bootstrap/scss/bootstrap";
 
-form  {
-  &.fibonacci_sequence {
+form {
+  &[name=fibonacci_sequence] {
     > #fibonacci_sequence {
       @include make-row();
+
+      > div {
+        @include make-col-ready();
+        &:nth-of-type(1),
+        &:nth-of-type(2) {
+          @include media-breakpoint-up(sm) {
+            @include make-col(6);
+          }
+        }
+      }
     }
   }
 }

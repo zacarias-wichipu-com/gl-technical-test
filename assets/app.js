@@ -25,20 +25,28 @@ $(document).ready(function () {
 
         const formData = new FormData(event.target);
 
-        let lower_limit = formData.get('fibonacci_sequence[lower_limit]').replace(/T/i, '');
-        let upper_limit = formData.get('fibonacci_sequence[upper_limit]').replace(/T/i, '');
+        let start_date = formData.get('fibonacci_sequence[start_date]').replace(/T/i, ' ');
+        let end_date = formData.get('fibonacci_sequence[end_date]').replace(/T/i, ' ');
 
         $.ajax({
             method: 'GET',
             url: app_fibonacci_api_get_route,
-            data: {'lower_limit': lower_limit, 'upper_limit': upper_limit}
+            data: {'start_date': start_date, 'end_date': end_date}
         })
             .done(function (response) {
-                if (response.contained_numbers !== undefined && Array.isArray(response.contained_numbers) && response.contained_numbers.length > 0) {
-                    $("main[role='main']").append('<div id="fAlert" class="alert alert-success" role="alert">The numbers of the Fibonacci series contained between the dates are: ' + response.contained_numbers.join(',') + '.</div>');
+                if (response.fibonacci_sequence_range_match !== undefined && Array.isArray(response.fibonacci_sequence_range_match) && response.fibonacci_sequence_range_match.length > 0) {
+                    $("main[role='main']").append('<div id="fAlert" class="alert alert-success" role="alert">The numbers of the Fibonacci series contained between the dates are: ' + response.fibonacci_sequence_range_match.join(', ') + '.</div>');
                     return;
                 }
-                $("main[role='main']").append('<div id="fAlert" class="alert alert-danger" role="alert">There are no Fibonacci numbers between these dates.</div>');
+                $("main[role='main']").append('<div id="fAlert" class="alert alert-warning" role="alert">There are no Fibonacci numbers between these dates.</div>');
+            })
+            .fail(function (jqXHR) {
+                let error_message = 'Se ha producido un error, por favor, inténtalo de nuevo.'
+                if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON.error !== undefined && jqXHR.responseJSON.error.length > 0) {
+                    error_message = jqXHR.responseJSON.error
+                }
+                $("main[role='main']").append('<div id="fAlert" class="alert alert-danger" role="alert">' + error_message + '</div>');
+                return;
             });
     });
 });

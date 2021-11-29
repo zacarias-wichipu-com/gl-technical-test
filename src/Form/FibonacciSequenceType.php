@@ -13,13 +13,13 @@ class FibonacciSequenceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('lower_limit', DateTimeType::class, [
+            ->add('start_date', DateTimeType::class, [
                 'label' => 'Start Date',
                 'data' => (new \DateTimeImmutable('first day of this month'))->setTime(00, 00, 00),
                 'widget' => 'single_text',
                 'with_seconds' => true,
             ])
-            ->add('upper_limit', DateTimeType::class, [
+            ->add('end_date', DateTimeType::class, [
                 'label' => 'End Date',
                 'data' => (new \DateTimeImmutable('last day of this month'))->setTime(23, 59, 59),
                 'widget' => 'single_text',

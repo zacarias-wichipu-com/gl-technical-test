@@ -22,33 +22,37 @@ class FibonacciController extends AbstractController
     public function index(
         Request $request,
         FibonacciRangeMatcher $fibonacciRangeMatcher
-    ): JsonResponse
-    {
-
+    ): JsonResponse {
         try {
             $fibonacciSequenceRangeMatch = $fibonacciRangeMatcher->matchRangeInFibonacciSequence(
                 $request->query->get('start_date'),
                 $request->query->get('end_date')
             );
         } catch (InvalidDateRangeFormatException $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
                 Response::HTTP_BAD_REQUEST
-            ]);
+            );
         } catch (InvalidDateRangeException $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
                 Response::HTTP_BAD_REQUEST
-            ]);
+            );
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
+            return $this->json(
+                [
+                    'error' => $e->getMessage()
+                ],
                 Response::HTTP_BAD_REQUEST
-            ]);
+            );
         }
 
         return $this->json([
-            'fibonacci_sequence_range_match' => $fibonacciSequenceRangeMatch
+            'fibonacci_sequence_range_match' => array_values($fibonacciSequenceRangeMatch)
         ]);
     }
 }

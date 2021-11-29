@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Front;
 
 use App\Form\FibonacciSequenceType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/', name: 'front_')]
-class FrontController extends AbstractController
+#[Route('/', name: 'default_')]
+class DefaultController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(): Response
